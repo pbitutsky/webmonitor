@@ -1,7 +1,25 @@
 import requests
 import os
+from bs4 import BeautifulSoup
 
 URL_TO_MONITOR = "" #change this to the URL you want to monitor
+
+def process_html(string):
+    soup = BeautifulSoup(string, features="lxml")
+
+    # make the html look good
+    soup.prettify()
+
+    # remove script tags
+    for s in soup.select('script'):
+        s.extract()
+
+    # remove meta tags 
+    for s in soup.select('meta'):
+        s.extract()
+    
+    # convert to a string, remove '\r', and return
+    return str(soup).replace('\r', '')
 
 def webpage_was_changed(): 
     """Returns true if the webpage was changed, otherwise false."""
@@ -17,10 +35,12 @@ def webpage_was_changed():
     previous_response_html = filehandle.read() 
     filehandle.close()
 
-    if previous_response_text == response.text:
+    processed_response_html = process_html(response.text)
+
+    if processed_response_html == previous_response_html:
         return False
     else:
         filehandle = open("previous_content.txt", 'w')
-        filehandle.write(response.text)
+        filehandle.write(processed_response_html)
         filehandle.close()
         return True
