@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from twilio.rest import Client
 import yagmail
 import time
+import logging
 
 URL_TO_MONITOR = "" #change this to the URL you want to monitor
 DELAY_TIME = 15 # seconds
@@ -71,8 +72,14 @@ def webpage_was_changed():
         filehandle.close()
         return True
 
+log = logging.getLogger(__name__)
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"), format='%(asctime)s %(message)s')
+log.info("Running Website Monitor")
 while True:
     if webpage_was_changed():
+        log.info("WEBPAGE WAS CHANGED.")
         send_text_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
         send_email_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
+    else:
+        log.info("Webpage was not changed.")
     time.sleep(DELAY_TIME)
