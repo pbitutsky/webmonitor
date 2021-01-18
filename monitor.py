@@ -3,8 +3,10 @@ import os
 from bs4 import BeautifulSoup
 from twilio.rest import Client
 import yagmail
+import time
 
 URL_TO_MONITOR = "" #change this to the URL you want to monitor
+DELAY_TIME = 15 # seconds
 
 TWILIO_ACCOUNT_SID = "" # replace with your Account SID 
 TWILIO_AUTH_TOKEN = "" # replace with your Auth Token
@@ -68,3 +70,9 @@ def webpage_was_changed():
         filehandle.write(processed_response_html)
         filehandle.close()
         return True
+
+while True:
+    if webpage_was_changed():
+        send_text_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
+        send_email_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
+    time.sleep(DELAY_TIME)
