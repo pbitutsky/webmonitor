@@ -76,10 +76,13 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"), format='%(asctime)s %(message)s')
 log.info("Running Website Monitor")
 while True:
-    if webpage_was_changed():
-        log.info("WEBPAGE WAS CHANGED.")
-        send_text_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
-        send_email_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
-    else:
-        log.info("Webpage was not changed.")
+    try:
+        if webpage_was_changed():
+            log.info("WEBPAGE WAS CHANGED.")
+            send_text_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
+            send_email_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
+        else:
+            log.info("Webpage was not changed.")
+    except:
+        log.info("Error checking website.")
     time.sleep(DELAY_TIME)
