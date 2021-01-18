@@ -1,8 +1,22 @@
 import requests
 import os
 from bs4 import BeautifulSoup
+from twilio.rest import Client
 
 URL_TO_MONITOR = "" #change this to the URL you want to monitor
+
+TWILIO_ACCOUNT_SID = "" # replace with your Account SID 
+TWILIO_AUTH_TOKEN = "" # replace with your Auth Token
+TWILIO_PHONE_SENDER = "+12345678901" # replace with the phone number you registered in twilio
+TWILIO_PHONE_RECIPIENT = "+12345678901" # replace with your phone number
+
+def send_text_alert(alert_str):
+    """Sends an SMS text alert."""
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    message = client.messages.create(
+        to=TWILIO_PHONE_RECIPIENT, 
+        from_=TWILIO_PHONE_SENDER,
+        body=alert_str)
 
 def process_html(string):
     soup = BeautifulSoup(string, features="lxml")
