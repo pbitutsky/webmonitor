@@ -72,17 +72,22 @@ def webpage_was_changed():
         filehandle.close()
         return True
 
-log = logging.getLogger(__name__)
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"), format='%(asctime)s %(message)s')
-log.info("Running Website Monitor")
-while True:
-    try:
-        if webpage_was_changed():
-            log.info("WEBPAGE WAS CHANGED.")
-            send_text_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
-            send_email_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
-        else:
-            log.info("Webpage was not changed.")
-    except:
-        log.info("Error checking website.")
-    time.sleep(DELAY_TIME)
+def main():
+    log = logging.getLogger(__name__)
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"), format='%(asctime)s %(message)s')
+    log.info("Running Website Monitor")
+    while True:
+        try:
+            if webpage_was_changed():
+                log.info("WEBPAGE WAS CHANGED.")
+                send_text_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
+                send_email_alert(f"URGENT! {URL_TO_MONITOR} WAS CHANGED!")
+            else:
+                log.info("Webpage was not changed.")
+        except:
+            log.info("Error checking website.")
+        time.sleep(DELAY_TIME)
+
+
+if __name__ == "__main__":
+    main()
